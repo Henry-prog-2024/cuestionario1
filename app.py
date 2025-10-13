@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import json
-import os 
+import os
 from datetime import datetime
 
 # --- CONFIGURACIÓN DE LA APP ---
@@ -19,41 +19,65 @@ def guardar_respuestas(usuario, respuestas, resultado):
         **respuestas,
         "resultado": resultado
     }])
-    df.to_csv("respuestas.csv", mode="a", header=not os.path.exists("respuestas.csv"), index=False, encoding="utf-8-sig")
+    archivo = "respuestas.csv"
+    df.to_csv(archivo, mode="a", header=not os.path.exists(archivo), index=False, encoding="utf-8-sig")
 
-# --- INTERFAZ ---
+# --- FUNCIÓN PARA LEER RESPUESTAS ---
+def cargar_respuestas():
+    if os.path.exists("respuestas.csv"):
+        return pd.read_csv("respuestas.csv", encoding="utf-8-sig")
+    else:
+        return pd.DataFrame()
+
+# --- INTERFAZ PRINCIPAL ---
 st.title("🧠 Cuestionario Interactivo")
-st.write("Responde las siguientes preguntas y descubre tu resultado al final.")
 
-# --- LOGIN BÁSICO ---
-usuario = st.text_input("👤 Ingrese su nombre de usuario")
+# Crear pestañas
+tab1, tab2 = st.tabs(["📋 Cuestionario", "📊 Resultados"])
 
-if usuario:
-    st.success(f"Bienvenido, {usuario}")
+# --- TAB 1: CUESTIONARIO ---
+with tab1:
+    st.subheader("Responde las siguientes preguntas:")
 
-    # Diccionario para almacenar respuestas
-    respuestas = {}
+    usuario = st.text_input("👤 Ingrese su nombre de usuario")
 
-    # --- MOSTRAR PREGUNTAS ---
-    for i, p in enumerate(preguntas):
-        respuesta = st.radio(p["pregunta"], p["opciones"], key=i)
-        respuestas[p["pregunta"]] = respuesta
+    if usuario:
+        st.success(f"Bienvenido, {usuario}")
 
-    # --- BOTÓN PARA ENVIAR ---
-    if st.button("📤 Enviar respuestas"):
-        # Ejemplo simple: contar cuántos "Sí"
-        puntaje = sum([1 for r in respuestas.values() if r == "Sí"])
-        resultado = f"Tu resultado es {puntaje} puntos"
-        st.success(resultado)
+        respuestas = {}
+        for i, p in enumerate(preguntas):
+            respuesta = st.radio(p["pregunta"], p["opciones"], key=f"q{i}")
+            respuestas[p["pregunta"]] = respuesta
 
-        guardar_respuestas(usuario, respuestas, resultado)
-        st.balloons()
+        if st.button("📤 Enviar respuestas"):
+            # Ejemplo simple de cálculo de resultado
+            puntaje = sum([1 for r in respuestas.values() if r == "Sí"])
+            resultado = f"Tu resultado es {puntaje} puntos"
+            st.success(resultado)
+            guardar_respuestas(usuario, respuestas, resultado)
+            st.balloons()
+            st.markdown(f"### 🏁 {resultado}")
+    else:
+        st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
 
-        # --- MOSTRAR RESULTADO ---
-        st.markdown(f"### 🏁 {resultado}")
+# --- TAB 2: RESULTADOS ---
+with tab2:
+    st.subheader("📊 Resultados de todos los participantes")
+    df = cargar_respuestas()
 
-        # Mostrar todas las respuestas del usuario
-        st.dataframe(pd.DataFrame([respuestas]))
+    if not df.empty:
+        st.dataframe(df)
 
-else:
-    st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
+        # Mostrar estadísticas simples
+        st.markdown("### 📈 Estadísticas generales")
+        st.write(f"Total de participantes: **{len(df)}**")
+
+        # Gráfico de resultados
+        conteo = df["resultado"].value_counts()
+        st.bar_chart(conteo)
+
+        # Opción de descarga
+        csv = df.to_csv(index=False, encoding="utf-8-sig").encode("utf-8-sig")
+        st.download_button("⬇️ Descargar resultados (CSV)", data=csv, file_name="respuestas.csv", mime="text/csv")
+    else:
+        st.info("Aún no hay respuestas registradas.")
