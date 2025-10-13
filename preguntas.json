@@ -1,0 +1,14 @@
+[
+  {
+    "pregunta": "¿Te gusta programar?",
+    "opciones": ["Sí", "No"]
+  },
+  {
+    "pregunta": "¿Prefieres trabajo en equipo?",
+    "opciones": ["Sí", "No"]
+  },
+  {
+    "pregunta": "¿Te interesan los datos?",
+    "opciones": ["Sí", "No"]
+  }
+]
