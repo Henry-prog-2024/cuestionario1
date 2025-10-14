@@ -44,21 +44,28 @@ def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel
             header=not os.path.exists(archivo),
             index=False,
             encoding="utf-8-sig"
+            quoting=pd.io.common.csv_quoting.QUOTE_ALL
         )
         st.success("✅ Respuestas y resultados guardados correctamente.")
     except Exception as e:
         st.error(f"❌ Error al guardar respuestas: {e}")
 
 def cargar_respuestas():
-    """Lee las respuestas almacenadas"""
+    """Lee las respuestas almacenadas (versión robusta)"""
     archivo = os.path.join(os.path.dirname(__file__), "respuestas.csv")
     if os.path.exists(archivo):
         try:
-            return pd.read_csv(archivo, encoding="utf-8-sig")
-        except Exception:
-            st.warning("⚠️ No se pudo leer correctamente 'respuestas.csv'. Se omitirá su carga.")
+            with open(archivo, "r", encoding="utf-8-sig") as f:
+                contenido = f.read()
+            df = pd.read_csv(pd.compat.StringIO(contenido), sep=",", quotechar='"', on_bad_lines="skip")
+            st.success(f"📂 Archivo cargado correctamente ({len(df)} registros).")
+            return df
+        except Exception as e:
+            st.error(f"❌ Error al leer 'respuestas.csv': {e}")
+            st.info("🔧 Intenta eliminar el archivo y volver a generar uno nuevo.")
             return pd.DataFrame()
     else:
+        st.warning("⚠️ No se encontró el archivo 'respuestas.csv'.")
         return pd.DataFrame()
 
 # --- INTERFAZ PRINCIPAL ---
