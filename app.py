@@ -104,5 +104,56 @@ with tab1:
                         index=None
                     )
 
-                #
+                # Botón para finalizar
+                if st.button("📤 Enviar respuestas"):
+                    correctas = 0
+                    for p in preguntas:
+                        if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
+                            correctas += 1
 
+                    puntaje = correctas
+                    tiempo_usado = f"{tiempo_transcurrido//60}:{tiempo_transcurrido%60:02d}"
+
+                    # Evaluación de nivel
+                    if puntaje >= 40:
+                        nivel = "🔥 Rendimiento Alto"
+                    elif puntaje >= 25:
+                        nivel = "⚖️ Rendimiento Medio"
+                    else:
+                        nivel = "🧩 Rendimiento Bajo"
+
+                    # Guardar todo
+                    guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
+
+                    st.success(f"✅ Has obtenido **{puntaje}** de **{len(preguntas)}** respuestas correctas.")
+                    st.info(f"Tu nivel es: **{nivel}**")
+                    st.write(f"⏱️ Tiempo usado: {tiempo_usado} minutos")
+                    st.balloons()
+
+                    st.session_state.en_progreso = False
+
+    else:
+        st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
+
+# --- TAB 2: RESULTADOS ---
+with tab2:
+    st.subheader("📊 Resultados generales")
+    df = cargar_respuestas()
+
+    if not df.empty:
+        # Mostrar resumen
+        columnas_principales = [col for col in ["usuario", "fecha", "puntaje", "nivel", "tiempo_usado"] if col in df.columns]
+        st.dataframe(df[columnas_principales])
+        st.write(f"👥 Total de participantes: {len(df)}")
+
+        # Mostrar gráfico si hay puntajes
+        if "puntaje" in df.columns:
+            st.bar_chart(df["puntaje"])
+        else:
+            st.info("📊 Aún no hay datos de puntaje para graficar.")
+
+        # Botón de descarga completa
+        csv = df.to_csv(index=False).encode("utf-8-sig")
+        st.download_button("⬇️ Descargar respuestas completas (CSV)", csv, "respuestas_completas.csv")
+    else:
+        st.info("Aún no hay resultados registrados.")
