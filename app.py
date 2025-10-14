@@ -54,11 +54,15 @@ def cargar_respuestas():
     """Lee las respuestas almacenadas"""
     if os.path.exists("respuestas.csv"):
         try:
-            return pd.read_csv("respuestas.csv", encoding="utf-8-sig")
-        except Exception:
-            st.warning("⚠️ No se pudo leer correctamente 'respuestas.csv'. Se omitirá su carga.")
+            df = pd.read_csv("respuestas.csv", encoding="utf-8-sig")
+            st.write("📂 Archivo cargado correctamente. Filas:", len(df))
+            st.write(df.head())
+            return df
+        except Exception as e:
+            st.error(f"❌ Error al leer 'respuestas.csv': {e}")
             return pd.DataFrame()
     else:
+        st.warning("⚠️ No se encontró el archivo 'respuestas.csv'.")
         return pd.DataFrame()
 
 # --- INTERFAZ PRINCIPAL ---
