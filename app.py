@@ -28,7 +28,6 @@ def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel
         "nivel": nivel
     }
 
-    # Añadir cada pregunta, respuesta del usuario y correcta
     for p in preguntas:
         pregunta_texto = p["pregunta"]
         data[f"{p['id']}_pregunta"] = pregunta_texto
@@ -36,7 +35,7 @@ def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel
         data[f"{p['id']}_respuesta_correcta"] = p["respuesta_correcta"]
 
     df = pd.DataFrame([data])
-    archivo = os.path.join(os.getcwd(), "respuestas.csv")
+    archivo = os.path.join(os.path.dirname(__file__), "respuestas.csv")
 
     try:
         df.to_csv(
@@ -52,22 +51,19 @@ def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel
 
 def cargar_respuestas():
     """Lee las respuestas almacenadas"""
-    if os.path.exists("respuestas.csv"):
+    archivo = os.path.join(os.path.dirname(__file__), "respuestas.csv")
+    if os.path.exists(archivo):
         try:
-            df = pd.read_csv("respuestas.csv", encoding="utf-8-sig")
-            st.write("📂 Archivo cargado correctamente. Filas:", len(df))
-            st.write(df.head())
-            return df
-        except Exception as e:
-            st.error(f"❌ Error al leer 'respuestas.csv': {e}")
+            return pd.read_csv(archivo, encoding="utf-8-sig")
+        except Exception:
+            st.warning("⚠️ No se pudo leer correctamente 'respuestas.csv'. Se omitirá su carga.")
             return pd.DataFrame()
     else:
-        st.warning("⚠️ No se encontró el archivo 'respuestas.csv'.")
         return pd.DataFrame()
 
 # --- INTERFAZ PRINCIPAL ---
 st.title("🧠 Test de Wonderlic Online")
-st.write("Tendrás **12 minutos** para responder tantas preguntas como puedas. ¡Buena suerte!")
+st.write("Tendrás **2 minutos** para responder tantas preguntas como puedas. ¡Buena suerte!")
 
 tab1, tab2 = st.tabs(["📋 Cuestionario", "📊 Resultados"])
 
@@ -87,34 +83,40 @@ with tab1:
         # Mostrar tiempo restante si el test está en progreso
         if st.session_state.get("en_progreso", False):
             tiempo_transcurrido = int(time.time() - st.session_state.inicio)
-            tiempo_restante = 1 * 60 - tiempo_transcurrido  # 12 minutos
+            tiempo_restante = 2 * 60 - tiempo_transcurrido  # Cambia 2 a 12 para el test real
 
+            # --- AUTO-GUARDADO CUANDO EL TIEMPO SE ACABA ---
             if tiempo_restante <= 0:
                 st.warning("⏰ ¡Tiempo agotado! Tus respuestas se guardarán automáticamente.")
                 st.session_state.en_progreso = False
 
-            # --- NUEVO: guardar automáticamente ---
-            respuestas_usuario = st.session_state.respuestas
-            correctas = 0
-            for p in preguntas:
-                if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
-                    correctas += 1
+                respuestas_usuario = st.session_state.respuestas
+                correctas = 0
+                for p in preguntas:
+                    if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
+                        correctas += 1
 
-            puntaje = correctas
-            tiempo_usado = "2:00"  # ya se cumplió el límite exacto
-            if puntaje >= 40:
-                nivel = "🔥 Rendimiento Alto"
-            elif puntaje >= 25:
-                nivel = "⚖️ Rendimiento Medio"
+                puntaje = correctas
+                tiempo_usado = "2:00"
+                if puntaje >= 40:
+                    nivel = "🔥 Rendimiento Alto"
+                elif puntaje >= 25:
+                    nivel = "⚖️ Rendimiento Medio"
+                else:
+                    nivel = "🧩 Rendimiento Bajo"
+
+                guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
+                st.success(f"✅ Test guardado automáticamente. Puntaje: {puntaje} de {len(preguntas)}")
+                st.balloons()
+
             else:
-                nivel = "🧩 Rendimiento Bajo"
+                minutos = tiempo_restante // 60
+                segundos = tiempo_restante % 60
+                st.info(f"⏱️ Tiempo restante: {minutos:02d}:{segundos:02d}")
 
-            guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
-            st.success(f"✅ Test guardado automáticamente. Puntaje: {puntaje} de {len(preguntas)}")
+                respuestas_usuario = st.session_state.respuestas
 
-                #respuestas_usuario = st.session_state.respuestas
-
-                # Mostrar las preguntas
+                # Mostrar preguntas
                 for p in preguntas:
                     respuestas_usuario[p["pregunta"]] = st.radio(
                         p["pregunta"],
@@ -123,7 +125,7 @@ with tab1:
                         index=None
                     )
 
-                # Botón para finalizar
+                # Botón manual para enviar
                 if st.button("📤 Enviar respuestas"):
                     correctas = 0
                     for p in preguntas:
@@ -132,8 +134,6 @@ with tab1:
 
                     puntaje = correctas
                     tiempo_usado = f"{tiempo_transcurrido//60}:{tiempo_transcurrido%60:02d}"
-
-                    # Evaluación de nivel
                     if puntaje >= 40:
                         nivel = "🔥 Rendimiento Alto"
                     elif puntaje >= 25:
@@ -141,7 +141,6 @@ with tab1:
                     else:
                         nivel = "🧩 Rendimiento Bajo"
 
-                    # Guardar todo
                     guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
 
                     st.success(f"✅ Has obtenido **{puntaje}** de **{len(preguntas)}** respuestas correctas.")
@@ -150,7 +149,6 @@ with tab1:
                     st.balloons()
 
                     st.session_state.en_progreso = False
-
     else:
         st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
 
@@ -162,7 +160,6 @@ with tab2:
     if not df.empty:
         st.success(f"📂 Archivo cargado correctamente. Filas: {len(df)}")
 
-        # Mostrar resumen general
         columnas_principales = [c for c in ["usuario", "fecha", "puntaje", "nivel", "tiempo_usado"] if c in df.columns]
         st.write("### 🧾 Resumen general de participantes")
         st.dataframe(df[columnas_principales])
@@ -175,9 +172,8 @@ with tab2:
 
             if not df_user.empty:
                 st.write(f"### 📋 Respuestas de {seleccionado}")
-                ultima = df_user.iloc[-1]  # Último intento del usuario
+                ultima = df_user.iloc[-1]
 
-                # Mostrar resumen individual
                 if "puntaje" in df.columns:
                     st.write(f"**Puntaje:** {ultima.get('puntaje', 'N/A')} / {len(preguntas)}")
                 if "nivel" in df.columns:
@@ -185,7 +181,6 @@ with tab2:
                 if "tiempo_usado" in df.columns:
                     st.write(f"**Tiempo usado:** {ultima.get('tiempo_usado', 'N/A')}")
 
-                # Mostrar tabla con respuestas
                 respuestas_tabla = []
                 for p in preguntas:
                     pid = p["id"]
@@ -205,15 +200,13 @@ with tab2:
         else:
             st.info("No hay usuarios registrados aún.")
 
-        # Mostrar gráfico general
+        # Gráfico general
         if "puntaje" in df.columns:
             st.write("### 📈 Distribución de puntajes")
             st.bar_chart(df["puntaje"])
 
-        # Botón para descargar todo
+        # Botón descarga
         csv = df.to_csv(index=False).encode("utf-8-sig")
         st.download_button("⬇️ Descargar todas las respuestas (CSV)", csv, "respuestas_completas.csv")
-
     else:
         st.info("Aún no hay resultados registrados.")
-
