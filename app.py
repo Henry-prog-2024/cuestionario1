@@ -83,7 +83,7 @@ with tab1:
         # Mostrar tiempo restante si el test está en progreso
         if st.session_state.get("en_progreso", False):
             tiempo_transcurrido = int(time.time() - st.session_state.inicio)
-            tiempo_restante = 2 * 60 - tiempo_transcurrido  # 12 minutos
+            tiempo_restante = 1 * 60 - tiempo_transcurrido  # 12 minutos
 
             if tiempo_restante <= 0:
                 st.warning("⏰ ¡Tiempo agotado! No puedes seguir respondiendo.")
