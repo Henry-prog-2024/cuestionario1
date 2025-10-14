@@ -1,14 +1,571 @@
 [
   {
-    "pregunta": "¿Te gusta programar?",
-    "opciones": ["Sí", "No"]
+    "id": 1,
+    "pregunta": "El último mes del año es:",
+    "opciones": [
+      "Enero",
+      "Marzo",
+      "Julio",
+      "Diciembre",
+      "Octubre"
+    ],
+    "respuesta_correcta": "Diciembre"
   },
   {
-    "pregunta": "¿Prefieres trabajo en equipo?",
-    "opciones": ["Sí", "No"]
+    "id": 2,
+    "pregunta": "CAPTURAR es lo contrario de:",
+    "opciones": [
+      "Colocar",
+      "Libertad",
+      "Arriesgar",
+      "Aventurar",
+      "Desagradar"
+    ],
+    "respuesta_correcta": "Libertad"
   },
   {
-    "pregunta": "¿Te interesan los datos?",
-    "opciones": ["Sí", "No"]
+    "id": 3,
+    "pregunta": "Todas las palabras abajo citadas se parecen entre sí. ¿Cuál es la que menos parecido tiene con la otra?",
+    "opciones": [
+      "Enero",
+      "Agosto",
+      "Miércoles",
+      "Octubre",
+      "Diciembre"
+    ],
+    "respuesta_correcta": "Miércoles"
+  },
+  {
+    "id": 4,
+    "pregunta": "Conteste Sí o No: R.P.I. significa 'ruegue a Dios por él'",
+    "opciones": [
+      "Sí",
+      "No"
+    ],
+    "respuesta_correcta": "No"
+  },
+  {
+    "id": 5,
+    "pregunta": "En las siguientes palabras: ¿Cuál es diferente de las otras?",
+    "opciones": [
+      "Tropa",
+      "Grupo",
+      "Participar",
+      "Jauría",
+      "Cuadrilla"
+    ],
+    "respuesta_correcta": "Participar"
+  },
+  {
+    "id": 6,
+    "pregunta": "USUAL es lo contrario de:",
+    "opciones": [
+      "Raro",
+      "Habitual",
+      "Regular",
+      "Constante",
+      "Siempre"
+    ],
+    "respuesta_correcta": "Raro"
+  },
+  {
+    "id": 7,
+    "pregunta": "¿Con cuál figura puede hacerse dos triángulos equiláteros?",
+    "opciones": [
+      "Triángulo grande dividido por la mediana",
+      "Hexágono regular dividido en dos",
+      "Dos triángulos equiláteros juntos (forma de rombo)",
+      "Triángulo equilátero con una línea interna que crea dos equiláteros",
+      "Pentágono dividido en dos"
+    ],
+    "respuesta_correcta": "Dos triángulos equiláteros juntos (forma de rombo)"
+  },
+  {
+    "id": 8,
+    "pregunta": "Ve la fila de números: 8 4 2 1 1/2 1/4 1/8. ¿Cuál número debe venir después?",
+    "opciones": [
+      "1/16",
+      "1/4",
+      "1/32",
+      "1/8",
+      "1/64"
+    ],
+    "respuesta_correcta": "1/16"
+  },
+  {
+    "id": 9,
+    "pregunta": "Cliente – Consumidor, estas palabras tienen:",
+    "opciones": [
+      "Significado igual",
+      "Contradictorio",
+      "No son iguales ni contradictorios"
+    ],
+    "respuesta_correcta": "Significado igual"
+  },
+  {
+    "id": 10,
+    "pregunta": "¿Cuál de las palabras citadas está relacionada con oler, como masticar está con dientes?",
+    "opciones": [
+      "Dulce",
+      "Pestilencia",
+      "Olor",
+      "Nariz",
+      "Limpio"
+    ],
+    "respuesta_correcta": "Nariz"
+  },
+  {
+    "id": 11,
+    "pregunta": "VERANO es lo contrario de:",
+    "opciones": [
+      "Vacaciones",
+      "Otoño",
+      "Invierno",
+      "Primavera",
+      "Nieve"
+    ],
+    "respuesta_correcta": "Invierno"
+  },
+  {
+    "id": 12,
+    "pregunta": "Un avión vuela 300 metros en ½ segundo. A esta misma velocidad, ¿Cuántos metros recorrerá en 10 segundos?",
+    "opciones": [
+      "6000",
+      "3000",
+      "600",
+      "1500",
+      "12000"
+    ],
+    "respuesta_correcta": "6000"
+  },
+  {
+    "id": 13,
+    "pregunta": "Suponga que las dos primeras afirmaciones son ciertas. La última es: Estos niños son normales. Todos los niños normales son activos. Estos niños son activos.",
+    "opciones": [
+      "Cierta",
+      "Falsa",
+      "No muy cierta"
+    ],
+    "respuesta_correcta": "Cierta"
+  },
+  {
+    "id": 14,
+    "pregunta": "REMOTO es lo contrario de:",
+    "opciones": [
+      "Aislado",
+      "Cercano",
+      "Lejano",
+      "Precipitado",
+      "Exacto"
+    ],
+    "respuesta_correcta": "Cercano"
+  },
+  {
+    "id": 15,
+    "pregunta": "Se venden limones a 3 por 10 centavos. ¿Cuánto costará una docena y media?",
+    "opciones": [
+      "60 ctv",
+      "50 ctv",
+      "45 ctv",
+      "30 ctv",
+      "90 ctv"
+    ],
+    "respuesta_correcta": "60 ctv"
+  },
+  {
+    "id": 16,
+    "pregunta": "¿Cuántas de las 5 cantidades abajo indicadas son idénticas una a la otra?",
+    "opciones": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "respuesta_correcta": "2"
+  },
+  {
+    "id": 17,
+    "pregunta": "Imagine que acomoda las palabras: 'Siempre un verbo oración una tiene.' ¿Cuál es la última letra de la última palabra?",
+    "opciones": [
+      "a",
+      "e",
+      "o",
+      "s",
+      "n"
+    ],
+    "respuesta_correcta": "a"
+  },
+  {
+    "id": 18,
+    "pregunta": "Un niño de 5 años tiene una hermana que es de doble edad que él. Cuando el niño tenga 8 años, ¿Cuál será la edad de su hermana?",
+    "opciones": [
+      "13",
+      "10",
+      "16",
+      "11",
+      "8"
+    ],
+    "respuesta_correcta": "13"
+  },
+  {
+    "id": 19,
+    "pregunta": "BAZO – VASO, estas palabras tienen:",
+    "opciones": [
+      "Significado Igual",
+      "Contradictorio",
+      "No son iguales ni contradictorio"
+    ],
+    "respuesta_correcta": "No son iguales ni contradictorio"
+  },
+  {
+    "id": 20,
+    "pregunta": "Suponga: Juan tiene la misma edad que María. María es menor que Guillermo. Juan es más joven que Guillermo. La última afirmación es:",
+    "opciones": [
+      "Verdadera",
+      "Falsa",
+      "No muy cierta"
+    ],
+    "respuesta_correcta": "Verdadera"
+  },
+  {
+    "id": 21,
+    "pregunta": "Un negociante compró varios coches por $4000, los vendió en $5000, ganando $50 en cada coche. ¿Cuántos coches compró?",
+    "opciones": [
+      "20",
+      "10",
+      "5",
+      "40",
+      "8"
+    ],
+    "respuesta_correcta": "20"
+  },
+  {
+    "id": 22,
+    "pregunta": "Arregla: 'Huevos ponen todos los pollos'. ¿Es verdadero o falso?",
+    "opciones": [
+      "V",
+      "F"
+    ],
+    "respuesta_correcta": "F"
+  },
+  {
+    "id": 23,
+    "pregunta": "Dos de los proverbios tienen igual significado. ¿Cuáles son?",
+    "opciones": [
+      "1 & 5",
+      "2 & 4",
+      "3 & 4",
+      "2 & 3",
+      "1 & 4"
+    ],
+    "respuesta_correcta": "1 & 5"
+  },
+  {
+    "id": 24,
+    "pregunta": "Un reloj se atrasa 1 minuto 18 segundos en 39 días. ¿Cuántos segundos se atrasa por día?",
+    "opciones": [
+      "2",
+      "3",
+      "18",
+      "20",
+      "1.9"
+    ],
+    "respuesta_correcta": "2"
+  },
+  {
+    "id": 25,
+    "pregunta": "HASTA - ASTA. Estas palabras tienen:",
+    "opciones": [
+      "Significado Igual",
+      "Contradictorio",
+      "No son iguales ni contradictorios"
+    ],
+    "respuesta_correcta": "No son iguales ni contradictorios"
+  },
+  {
+    "id": 26,
+    "pregunta": "Todos los Cuáqueros son pacifistas. Algunas personas en este cuarto son cuáqueros. ¿Algunas personas en este cuarto son pacifistas?",
+    "opciones": [
+      "Verdadera",
+      "Falsa",
+      "No muy cierta"
+    ],
+    "respuesta_correcta": "Verdadera"
+  },
+  {
+    "id": 27,
+    "pregunta": "En 30 días un niño ahorró $1. ¿Cuál fue su promedio de ahorro diario?",
+    "opciones": [
+      "3 1/3",
+      "0.03",
+      "0.33",
+      "1",
+      "0.1"
+    ],
+    "respuesta_correcta": "3 1/3"
+  },
+  {
+    "id": 28,
+    "pregunta": "INGENIOSO – INGENUO, estas palabras tienen:",
+    "opciones": [
+      "Significado Igual",
+      "Contradictorio",
+      "No son iguales ni contradictorios"
+    ],
+    "respuesta_correcta": "No son iguales ni contradictorios"
+  },
+  {
+    "id": 29,
+    "pregunta": "2 hombres pescaron 36 pescados: 'X' pescó 5 veces lo que 'Y'. ¿Cuántos pescó 'Y'?",
+    "opciones": [
+      "6",
+      "5",
+      "7",
+      "3",
+      "9"
+    ],
+    "respuesta_correcta": "6"
+  },
+  {
+    "id": 30,
+    "pregunta": "Un depósito rectangular, completamente lleno, contiene 800 m³ de granos. Si el depósito tiene 8 m de ancho y 10 m de largo. ¿Qué profundidad tiene?",
+    "opciones": [
+      "10",
+      "8",
+      "1",
+      "5",
+      "20"
+    ],
+    "respuesta_correcta": "10"
+  },
+  {
+    "id": 31,
+    "pregunta": "Uno de los números no encaja: 1/2 1/4 1/8 1/10 1/16 1/32. ¿Cuál debe estar en su lugar?",
+    "opciones": [
+      "1/10",
+      "1/8",
+      "1/16",
+      "1/32",
+      "1/4"
+    ],
+    "respuesta_correcta": "1/10"
+  },
+  {
+    "id": 32,
+    "pregunta": "Conteste 'SI' o 'NO': A.C. significa 'Antes de Cristo'",
+    "opciones": [
+      "Sí",
+      "No"
+    ],
+    "respuesta_correcta": "Sí"
+  },
+  {
+    "id": 33,
+    "pregunta": "CREYENTE – CRÉDULO. Estas palabras tienen:",
+    "opciones": [
+      "Significado Igual",
+      "Contradictorio",
+      "No son iguales ni contradictorios"
+    ],
+    "respuesta_correcta": "No son iguales ni contradictorios"
+  },
+  {
+    "id": 34,
+    "pregunta": "Una falda necesita 2 1/4 metros de tela. ¿Cuántas faldas pueden hacerse de 45 metros?",
+    "opciones": [
+      "20",
+      "18",
+      "16",
+      "22",
+      "15"
+    ],
+    "respuesta_correcta": "20"
+  },
+  {
+    "id": 35,
+    "pregunta": "Un reloj estaba exacto al mediodía del lunes. A las 2 p.m del miércoles, tenía un retraso de 25 segundos. A la misma velocidad ¿Cuánto se retrasó en media hora?",
+    "opciones": [
+      "1/4 de seg",
+      "15 seg",
+      "30 seg",
+      "25 seg",
+      "1 seg"
+    ],
+    "respuesta_correcta": "1/4 de seg"
+  },
+  {
+    "id": 36,
+    "pregunta": "Nuestro equipo perdió 9 juegos. Esto fue 3/8 de lo que jugaron. ¿Cuántos juegos jugaron?",
+    "opciones": [
+      "24",
+      "18",
+      "30",
+      "12",
+      "36"
+    ],
+    "respuesta_correcta": "24"
+  },
+  {
+    "id": 37,
+    "pregunta": "¿Cuál es el número que le sigue? 1 .5 .25 .125 ...",
+    "opciones": [
+      "0.0625",
+      "0.625",
+      "0.25",
+      "0.062",
+      "0.75"
+    ],
+    "respuesta_correcta": "0.0625"
+  },
+  {
+    "id": 38,
+    "pregunta": "Figura geométrica puede dividirse en dos partes que al unirse hacen un cuadrado perfecto. Elija la pareja correcta:",
+    "opciones": [
+      "2-7",
+      "6-9",
+      "1-4",
+      "3-8",
+      "5-10"
+    ],
+    "respuesta_correcta": "6-9"
+  },
+  {
+    "id": 39,
+    "pregunta": "Los significados de: 'Escoba nueva barre mejor' y 'Los zapatos viejos son más cómodos'. ¿Son:",
+    "opciones": [
+      "Significado Igual",
+      "Contradictorio",
+      "No son iguales ni contradictorios"
+    ],
+    "respuesta_correcta": "Contradictorio"
+  },
+  {
+    "id": 40,
+    "pregunta": "De los 5 nombres citados, ¿cuáles son exactamente iguales?",
+    "opciones": [
+      "Ferrara J.D.",
+      "Villafaña M.O",
+      "Díaz F.E",
+      "Palomar A.V",
+      "Parrés A.O"
+    ],
+    "respuesta_correcta": "Ferrara J.D."
+  },
+  {
+    "id": 41,
+    "pregunta": "Dos de los proverbios tienen igual significado. ¿Cuáles son?",
+    "opciones": [
+      "1 & 2",
+      "1 & 4",
+      "1 & 3",
+      "1 & 5",
+      "2 & 3"
+    ],
+    "respuesta_correcta": "1 & 4"
+  },
+  {
+    "id": 42,
+    "pregunta": "Esta figura puede dividirse en dos partes que al unirse hacen un cuadrado perfecto. Escriba los números que forman la pareja:",
+    "opciones": [
+      "1-3",
+      "2-4",
+      "3-22",
+      "3.22",
+      "3-8"
+    ],
+    "respuesta_correcta": "3.22"
+  },
+  {
+    "id": 43,
+    "pregunta": "¿Cuál de los números representa la cantidad más pequeña? 10, 1, .99, .33, 11",
+    "opciones": [
+      "10",
+      "1",
+      "0.99",
+      "0.33",
+      "11"
+    ],
+    "respuesta_correcta": "0.33"
+  },
+  {
+    "id": 44,
+    "pregunta": "Los significados: 'Nadie se arrepintió jamás de su honestidad.' y 'La honestidad se elogia pero no se paga.' ¿Son:",
+    "opciones": [
+      "Semejantes",
+      "Contradictorios",
+      "No son iguales ni contradictorios"
+    ],
+    "respuesta_correcta": "Contradictorios"
+  },
+  {
+    "id": 45,
+    "pregunta": "Un vendedor compra 12 docenas de manzanas a $1.80. Sabe que 2 docenas se pudrirán. ¿A qué precio por docena deberá vender las buenas para ganar un tercio del costo total?",
+    "opciones": [
+      "24 ctv",
+      "18 ctv",
+      "20 ctv",
+      "30 ctv",
+      "15 ctv"
+    ],
+    "respuesta_correcta": "24 ctv"
+  },
+  {
+    "id": 46,
+    "pregunta": "En las las siguientes palabras ¿Cuál es diferente a las demás?",
+    "opciones": [
+      "Colonia",
+      "Compañero",
+      "Bandada",
+      "Manojo",
+      "Constelación"
+    ],
+    "respuesta_correcta": "Compañero"
+  },
+  {
+    "id": 47,
+    "pregunta": "Suponga: Algunos grandes hombres son ridiculizados. Yo he sido ridiculizado. ¿Yo soy un gran hombre?",
+    "opciones": [
+      "Verdadera",
+      "Falsa",
+      "Dudoso"
+    ],
+    "respuesta_correcta": "Dudoso"
+  },
+  {
+    "id": 48,
+    "pregunta": "Tres hombres: X $4500, Y $3500, Z $2000. Ganancias $1500. ¿Cuánto menos recibe X de lo que debería haber recibido proporcionalmente?",
+    "opciones": [
+      "$175",
+      "$150",
+      "$200",
+      "$100",
+      "$1750"
+    ],
+    "respuesta_correcta": "$175"
+  },
+  {
+    "id": 49,
+    "pregunta": "Cuatro de las siguientes 5 partes pueden colocarse juntas para formar un triángulo. ¿Cuáles cuatro son?",
+    "opciones": [
+      "1,2,3,4",
+      "1,2,4,5",
+      "2,3,4,5",
+      "1,3,4,5",
+      "1,2,3,5"
+    ],
+    "respuesta_correcta": "1,2,4,5"
+  },
+  {
+    "id": 50,
+    "pregunta": "Al imprimir un artículo de 30000 palabras, tipo grande=1200 palabras/página, tipo chico=1500 palabras/página. El artículo debe ocupar 22 páginas. ¿Cuántas páginas deberán usarse para el tipo chico?",
+    "opciones": [
+      "12",
+      "10",
+      "15",
+      "8",
+      "14"
+    ],
+    "respuesta_correcta": "12"
   }
 ]
