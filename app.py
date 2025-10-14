@@ -90,14 +90,29 @@ with tab1:
             tiempo_restante = 1 * 60 - tiempo_transcurrido  # 12 minutos
 
             if tiempo_restante <= 0:
-                st.warning("⏰ ¡Tiempo agotado! No puedes seguir respondiendo.")
+                st.warning("⏰ ¡Tiempo agotado! Tus respuestas se guardarán automáticamente.")
                 st.session_state.en_progreso = False
-            else:
-                minutos = tiempo_restante // 60
-                segundos = tiempo_restante % 60
-                st.info(f"⏱️ Tiempo restante: {minutos:02d}:{segundos:02d}")
 
-                respuestas_usuario = st.session_state.respuestas
+            # --- NUEVO: guardar automáticamente ---
+            respuestas_usuario = st.session_state.respuestas
+            correctas = 0
+            for p in preguntas:
+                if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
+                    correctas += 1
+
+            puntaje = correctas
+            tiempo_usado = "2:00"  # ya se cumplió el límite exacto
+            if puntaje >= 40:
+                nivel = "🔥 Rendimiento Alto"
+            elif puntaje >= 25:
+                nivel = "⚖️ Rendimiento Medio"
+            else:
+                nivel = "🧩 Rendimiento Bajo"
+
+            guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
+            st.success(f"✅ Test guardado automáticamente. Puntaje: {puntaje} de {len(preguntas)}")
+
+                #respuestas_usuario = st.session_state.respuestas
 
                 # Mostrar las preguntas
                 for p in preguntas:
