@@ -145,19 +145,60 @@ with tab2:
     df = cargar_respuestas()
 
     if not df.empty:
-        # Mostrar resumen
-        columnas_principales = [col for col in ["usuario", "fecha", "puntaje", "nivel", "tiempo_usado"] if col in df.columns]
+        st.success(f"📂 Archivo cargado correctamente. Filas: {len(df)}")
+
+        # Mostrar resumen general
+        columnas_principales = [c for c in ["usuario", "fecha", "puntaje", "nivel", "tiempo_usado"] if c in df.columns]
+        st.write("### 🧾 Resumen general de participantes")
         st.dataframe(df[columnas_principales])
-        st.write(f"👥 Total de participantes: {len(df)}")
 
-        # Mostrar gráfico si hay puntajes
-        if "puntaje" in df.columns:
-            st.bar_chart(df["puntaje"])
+        # Filtro por usuario
+        usuarios = df["usuario"].unique().tolist() if "usuario" in df.columns else []
+        if usuarios:
+            seleccionado = st.selectbox("👤 Ver respuestas de:", usuarios)
+            df_user = df[df["usuario"] == seleccionado]
+
+            if not df_user.empty:
+                st.write(f"### 📋 Respuestas de {seleccionado}")
+                ultima = df_user.iloc[-1]  # Último intento del usuario
+
+                # Mostrar resumen individual
+                if "puntaje" in df.columns:
+                    st.write(f"**Puntaje:** {ultima.get('puntaje', 'N/A')} / {len(preguntas)}")
+                if "nivel" in df.columns:
+                    st.write(f"**Nivel:** {ultima.get('nivel', 'N/A')}")
+                if "tiempo_usado" in df.columns:
+                    st.write(f"**Tiempo usado:** {ultima.get('tiempo_usado', 'N/A')}")
+
+                # Mostrar tabla con respuestas
+                respuestas_tabla = []
+                for p in preguntas:
+                    pid = p["id"]
+                    r_usuario = ultima.get(f"{pid}_respuesta_usuario", "")
+                    r_correcta = ultima.get(f"{pid}_respuesta_correcta", "")
+                    correcto = "✅" if r_usuario == r_correcta else "❌"
+                    respuestas_tabla.append({
+                        "N°": pid,
+                        "Pregunta": p["pregunta"],
+                        "Tu respuesta": r_usuario,
+                        "Respuesta correcta": r_correcta,
+                        "Resultado": correcto
+                    })
+
+                st.write("### 📘 Detalle de respuestas")
+                st.dataframe(pd.DataFrame(respuestas_tabla))
         else:
-            st.info("📊 Aún no hay datos de puntaje para graficar.")
+            st.info("No hay usuarios registrados aún.")
 
-        # Botón de descarga completa
+        # Mostrar gráfico general
+        if "puntaje" in df.columns:
+            st.write("### 📈 Distribución de puntajes")
+            st.bar_chart(df["puntaje"])
+
+        # Botón para descargar todo
         csv = df.to_csv(index=False).encode("utf-8-sig")
-        st.download_button("⬇️ Descargar respuestas completas (CSV)", csv, "respuestas_completas.csv")
+        st.download_button("⬇️ Descargar todas las respuestas (CSV)", csv, "respuestas_completas.csv")
+
     else:
         st.info("Aún no hay resultados registrados.")
+
