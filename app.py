@@ -3,7 +3,9 @@ import pandas as pd
 import json
 import os
 import time
+import tempfile
 from datetime import datetime
+import io
 
 # --- CONFIGURACIÓN GENERAL ---
 st.set_page_config(page_title="Test de Wonderlic", page_icon="🧠", layout="centered")
@@ -19,7 +21,7 @@ except FileNotFoundError:
 
 # --- FUNCIONES AUXILIARES ---
 def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel):
-    """Guarda respuestas completas (usuario, resultados y selección por pregunta)"""
+    """Guarda respuestas completas en carpeta temporal (compatible con Streamlit Cloud)"""
     data = {
         "usuario": usuario,
         "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -28,6 +30,7 @@ def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel
         "nivel": nivel
     }
 
+    # Agregar cada pregunta y sus respuestas
     for p in preguntas:
         pregunta_texto = p["pregunta"]
         data[f"{p['id']}_pregunta"] = pregunta_texto
@@ -35,37 +38,36 @@ def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel
         data[f"{p['id']}_respuesta_correcta"] = p["respuesta_correcta"]
 
     df = pd.DataFrame([data])
-    archivo = os.path.join(os.path.dirname(__file__), "respuestas.csv")
 
-    try:
-        df.to_csv(
-            archivo,
-            mode="a",
-            header=not os.path.exists(archivo),
-            index=False,
-            encoding="utf-8-sig"
-            quoting=pd.io.common.csv_quoting.QUOTE_ALL
-        )
-        st.success("✅ Respuestas y resultados guardados correctamente.")
-    except Exception as e:
-        st.error(f"❌ Error al guardar respuestas: {e}")
+    # 📂 Guardar en carpeta temporal (permite escritura en Streamlit Cloud)
+    archivo = os.path.join(tempfile.gettempdir(), "respuestas.csv")
+
+    df.to_csv(
+        archivo,
+        mode="a",
+        header=not os.path.exists(archivo),
+        index=False,
+        encoding="utf-8-sig",
+        quoting=pd.io.common.csv_quoting.QUOTE_ALL
+    )
+
+    st.success("✅ Respuestas y resultados guardados correctamente.")
+    st.session_state["archivo_guardado"] = archivo
+
 
 def cargar_respuestas():
-    """Lee las respuestas almacenadas (versión robusta)"""
-    archivo = os.path.join(os.path.dirname(__file__), "respuestas.csv")
+    """Lee las respuestas almacenadas desde carpeta temporal"""
+    archivo = st.session_state.get("archivo_guardado", os.path.join(tempfile.gettempdir(), "respuestas.csv"))
     if os.path.exists(archivo):
         try:
             with open(archivo, "r", encoding="utf-8-sig") as f:
                 contenido = f.read()
-            df = pd.read_csv(pd.compat.StringIO(contenido), sep=",", quotechar='"', on_bad_lines="skip")
-            st.success(f"📂 Archivo cargado correctamente ({len(df)} registros).")
+            df = pd.read_csv(io.StringIO(contenido), sep=",", quotechar='"', on_bad_lines="skip")
             return df
         except Exception as e:
             st.error(f"❌ Error al leer 'respuestas.csv': {e}")
-            st.info("🔧 Intenta eliminar el archivo y volver a generar uno nuevo.")
             return pd.DataFrame()
     else:
-        st.warning("⚠️ No se encontró el archivo 'respuestas.csv'.")
         return pd.DataFrame()
 
 # --- INTERFAZ PRINCIPAL ---
@@ -90,7 +92,7 @@ with tab1:
         # Mostrar tiempo restante si el test está en progreso
         if st.session_state.get("en_progreso", False):
             tiempo_transcurrido = int(time.time() - st.session_state.inicio)
-            tiempo_restante = 2 * 60 - tiempo_transcurrido  # Cambia 2 a 12 para el test real
+            tiempo_restante = 2 * 60 - tiempo_transcurrido  # Cambia 2*60 a 12*60 para el test real
 
             # --- AUTO-GUARDADO CUANDO EL TIEMPO SE ACABA ---
             if tiempo_restante <= 0:
@@ -123,7 +125,7 @@ with tab1:
 
                 respuestas_usuario = st.session_state.respuestas
 
-                # Mostrar preguntas
+                # Mostrar las preguntas
                 for p in preguntas:
                     respuestas_usuario[p["pregunta"]] = st.radio(
                         p["pregunta"],
@@ -165,13 +167,12 @@ with tab2:
     df = cargar_respuestas()
 
     if not df.empty:
-        st.success(f"📂 Archivo cargado correctamente. Filas: {len(df)}")
+        st.success(f"📂 Archivo cargado correctamente ({len(df)} registros).")
 
         columnas_principales = [c for c in ["usuario", "fecha", "puntaje", "nivel", "tiempo_usado"] if c in df.columns]
         st.write("### 🧾 Resumen general de participantes")
         st.dataframe(df[columnas_principales])
 
-        # Filtro por usuario
         usuarios = df["usuario"].unique().tolist() if "usuario" in df.columns else []
         if usuarios:
             seleccionado = st.selectbox("👤 Ver respuestas de:", usuarios)
@@ -180,7 +181,6 @@ with tab2:
             if not df_user.empty:
                 st.write(f"### 📋 Respuestas de {seleccionado}")
                 ultima = df_user.iloc[-1]
-
                 if "puntaje" in df.columns:
                     st.write(f"**Puntaje:** {ultima.get('puntaje', 'N/A')} / {len(preguntas)}")
                 if "nivel" in df.columns:
@@ -207,13 +207,15 @@ with tab2:
         else:
             st.info("No hay usuarios registrados aún.")
 
-        # Gráfico general
+        # Botón de descarga
+        archivo_temp = st.session_state.get("archivo_guardado", None)
+        if archivo_temp and os.path.exists(archivo_temp):
+            with open(archivo_temp, "rb") as f:
+                st.download_button("⬇️ Descargar respuestas (CSV)", f, "respuestas.csv")
+
+        # Gráfico de puntajes
         if "puntaje" in df.columns:
             st.write("### 📈 Distribución de puntajes")
             st.bar_chart(df["puntaje"])
-
-        # Botón descarga
-        csv = df.to_csv(index=False).encode("utf-8-sig")
-        st.download_button("⬇️ Descargar todas las respuestas (CSV)", csv, "respuestas_completas.csv")
     else:
         st.info("Aún no hay resultados registrados.")
