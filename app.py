@@ -6,6 +6,7 @@ import time
 import tempfile
 from datetime import datetime
 import io
+import csv
 
 # --- CONFIGURACIÓN GENERAL ---
 st.set_page_config(page_title="Test de Wonderlic", page_icon="🧠", layout="centered")
@@ -48,7 +49,7 @@ def guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel
         header=not os.path.exists(archivo),
         index=False,
         encoding="utf-8-sig",
-        quoting=pd.io.common.csv_quoting.QUOTE_ALL
+        quoting=csv.QUOTE_ALL
     )
 
     st.success("✅ Respuestas y resultados guardados correctamente.")
