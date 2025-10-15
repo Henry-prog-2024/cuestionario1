@@ -73,7 +73,7 @@ def cargar_respuestas():
 
 # --- INTERFAZ PRINCIPAL ---
 st.title("🧠 Test de Wonderlic Online")
-st.write("Tendrás **2 minutos** para responder tantas preguntas como puedas. ¡Buena suerte!")
+st.write("Tendrás **12 minutos** para responder tantas preguntas como puedas. ¡Buena suerte!")
 
 tab1, tab2 = st.tabs(["📋 Cuestionario", "📊 Resultados"])
 
@@ -92,73 +92,78 @@ with tab1:
 
         # Mostrar tiempo restante si el test está en progreso
         if st.session_state.get("en_progreso", False):
-            tiempo_transcurrido = int(time.time() - st.session_state.inicio)
-            tiempo_restante = 2 * 60 - tiempo_transcurrido  # Cambia 2*60 a 12*60 para el test real
+    tiempo_transcurrido = int(time.time() - st.session_state.inicio)
+    duracion_total = 12 * 60  # ⏱️ 12 minutos en segundos
+    tiempo_restante = duracion_total - tiempo_transcurrido
 
-            # --- AUTO-GUARDADO CUANDO EL TIEMPO SE ACABA ---
-            if tiempo_restante <= 0:
-                st.warning("⏰ ¡Tiempo agotado! Tus respuestas se guardarán automáticamente.")
-                st.session_state.en_progreso = False
+    # --- AUTO-GUARDADO CUANDO EL TIEMPO SE ACABA ---
+    if tiempo_restante <= 0:
+        st.warning("⏰ ¡Tiempo agotado! Tus respuestas se guardarán automáticamente.")
+        st.session_state.en_progreso = False
 
-                respuestas_usuario = st.session_state.respuestas
-                correctas = 0
-                for p in preguntas:
-                    if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
-                        correctas += 1
+        respuestas_usuario = st.session_state.respuestas
+        correctas = 0
+        for p in preguntas:
+            if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
+                correctas += 1
 
-                puntaje = correctas
-                tiempo_usado = "2:00"
-                if puntaje >= 40:
-                    nivel = "🔥 Rendimiento Alto"
-                elif puntaje >= 25:
-                    nivel = "⚖️ Rendimiento Medio"
-                else:
-                    nivel = "🧩 Rendimiento Bajo"
+        puntaje = correctas
+        tiempo_usado = "12:00"
+        if puntaje >= 40:
+            nivel = "🔥 Rendimiento Alto"
+        elif puntaje >= 25:
+            nivel = "⚖️ Rendimiento Medio"
+        else:
+            nivel = "🧩 Rendimiento Bajo"
 
-                guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
-                st.success(f"✅ Test guardado automáticamente. Puntaje: {puntaje} de {len(preguntas)}")
-                st.balloons()
+        guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
+        st.success(f"✅ Test guardado automáticamente. Puntaje: {puntaje} de {len(preguntas)}")
+        st.balloons()
 
+    else:
+        minutos = tiempo_restante // 60
+        segundos = tiempo_restante % 60
+        progreso = tiempo_restante / duracion_total
+
+        # ⏳ Barra de progreso visual
+        st.info(f"⏱️ Tiempo restante: {minutos:02d}:{segundos:02d}")
+        st.progress(progreso)
+
+        respuestas_usuario = st.session_state.respuestas
+
+        # Mostrar las preguntas
+        for p in preguntas:
+            respuestas_usuario[p["pregunta"]] = st.radio(
+                p["pregunta"],
+                p["opciones"],
+                key=f"preg_{p['id']}",
+                index=None
+            )
+
+        # Botón manual para enviar
+        if st.button("📤 Enviar respuestas"):
+            correctas = 0
+            for p in preguntas:
+                if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
+                    correctas += 1
+
+            puntaje = correctas
+            tiempo_usado = f"{tiempo_transcurrido//60}:{tiempo_transcurrido%60:02d}"
+            if puntaje >= 40:
+                nivel = "🔥 Rendimiento Alto"
+            elif puntaje >= 25:
+                nivel = "⚖️ Rendimiento Medio"
             else:
-                minutos = tiempo_restante // 60
-                segundos = tiempo_restante % 60
-                st.info(f"⏱️ Tiempo restante: {minutos:02d}:{segundos:02d}")
+                nivel = "🧩 Rendimiento Bajo"
 
-                respuestas_usuario = st.session_state.respuestas
+            guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
 
-                # Mostrar las preguntas
-                for p in preguntas:
-                    respuestas_usuario[p["pregunta"]] = st.radio(
-                        p["pregunta"],
-                        p["opciones"],
-                        key=f"preg_{p['id']}",
-                        index=None
-                    )
+            st.success(f"✅ Has obtenido **{puntaje}** de **{len(preguntas)}** respuestas correctas.")
+            st.info(f"Tu nivel es: **{nivel}**")
+            st.write(f"⏱️ Tiempo usado: {tiempo_usado} minutos")
+            st.balloons()
 
-                # Botón manual para enviar
-                if st.button("📤 Enviar respuestas"):
-                    correctas = 0
-                    for p in preguntas:
-                        if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]:
-                            correctas += 1
-
-                    puntaje = correctas
-                    tiempo_usado = f"{tiempo_transcurrido//60}:{tiempo_transcurrido%60:02d}"
-                    if puntaje >= 40:
-                        nivel = "🔥 Rendimiento Alto"
-                    elif puntaje >= 25:
-                        nivel = "⚖️ Rendimiento Medio"
-                    else:
-                        nivel = "🧩 Rendimiento Bajo"
-
-                    guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
-
-                    st.success(f"✅ Has obtenido **{puntaje}** de **{len(preguntas)}** respuestas correctas.")
-                    st.info(f"Tu nivel es: **{nivel}**")
-                    st.write(f"⏱️ Tiempo usado: {tiempo_usado} minutos")
-                    st.balloons()
-
-                    st.session_state.en_progreso = False
+            st.session_state.en_progreso = False
     else:
         st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
 
