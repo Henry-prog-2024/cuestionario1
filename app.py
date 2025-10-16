@@ -90,8 +90,8 @@ with tab1:
                 st.session_state.en_progreso = True
                 st.session_state.respuestas = {}
 
-        # Mostrar tiempo restante si el test está en progreso
-        if st.session_state.get("en_progreso", False):
+    # Mostrar tiempo restante si el test está en progreso
+    if st.session_state.get("en_progreso", False):
     tiempo_transcurrido = int(time.time() - st.session_state.inicio)
     duracion_total = 12 * 60  # ⏱️ 12 minutos en segundos
     tiempo_restante = duracion_total - tiempo_transcurrido
