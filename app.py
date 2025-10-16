@@ -164,8 +164,8 @@ if st.session_state.get("en_progreso", False):
             st.balloons()
 
             st.session_state.en_progreso = False
-    else:
-        st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
+else:
+    st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
 
 # --- TAB 2: RESULTADOS ---
 with tab2:
