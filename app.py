@@ -63,7 +63,7 @@ def cargar_respuestas():
     else:
         return pd.DataFrame()
 
-# --- INTERFAZ ---
+# --- INTERFAZ PRINCIPAL ---
 st.title("🧠 Test de Wonderlic Online")
 st.write("Tendrás **12 minutos** para responder todas las preguntas. ¡Buena suerte!")
 
@@ -81,22 +81,60 @@ with tab1:
                 st.session_state.respuestas = {}
                 st.session_state.pregunta_actual = 0
 
-        # Mostrar solo una pregunta a la vez
+        # --- MODO TEST ---
         if st.session_state.get("en_progreso", False):
             tiempo_transcurrido = int(time.time() - st.session_state.inicio)
             duracion_total = 12 * 60
             tiempo_restante = duracion_total - tiempo_transcurrido
 
+            # --- GUARDADO AUTOMÁTICO AL TERMINAR EL TIEMPO ---
             if tiempo_restante <= 0:
-                st.warning("⏰ ¡Tiempo agotado! Tus respuestas se guardarán automáticamente.")
+                st.warning("⏰ ¡Tiempo agotado! Tus respuestas se están guardando automáticamente...")
                 st.session_state.en_progreso = False
+
+                respuestas_usuario = st.session_state.respuestas
+                correctas = sum(
+                    1 for p in preguntas
+                    if respuestas_usuario.get(p["pregunta"]) == p["respuesta_correcta"]
+                )
+                puntaje = correctas
+                tiempo_usado = "12:00"
+                if puntaje >= 40:
+                    nivel = "🔥 Rendimiento Alto"
+                elif puntaje >= 25:
+                    nivel = "⚖️ Rendimiento Medio"
+                else:
+                    nivel = "🧩 Rendimiento Bajo"
+
+                guardar_respuestas(usuario, respuestas_usuario, puntaje, tiempo_usado, nivel)
+                st.success(f"✅ Test guardado automáticamente. Puntaje: {puntaje}/{len(preguntas)}")
+                st.balloons()
+                st.experimental_rerun()
+
             else:
                 minutos = tiempo_restante // 60
                 segundos = tiempo_restante % 60
-                progreso = (st.session_state.pregunta_actual + 1) / len(preguntas)
-                st.progress(progreso)
+                progreso_pregunta = (st.session_state.pregunta_actual + 1) / len(preguntas)
+                porcentaje_tiempo = tiempo_restante / duracion_total
+
+                # --- BARRA DE COLOR DINÁMICO ---
+                if porcentaje_tiempo > 0.6:
+                    color_barra = "#28a745"  # Verde
+                elif porcentaje_tiempo > 0.3:
+                    color_barra = "#ffc107"  # Amarillo
+                else:
+                    color_barra = "#dc3545"  # Rojo
+
+                st.markdown(f"""
+                <div style='width:100%; background-color:#e9ecef; border-radius:10px; margin-top:10px;'>
+                    <div style='width:{porcentaje_tiempo*100:.1f}%; background-color:{color_barra};
+                                height:15px; border-radius:10px;'></div>
+                </div>
+                """, unsafe_allow_html=True)
+
                 st.info(f"⏱️ Tiempo restante: {minutos:02d}:{segundos:02d}")
 
+                # --- PREGUNTA ACTUAL ---
                 i = st.session_state.pregunta_actual
                 p = preguntas[i]
 
@@ -105,35 +143,46 @@ with tab1:
 
                 respuesta = st.radio("Selecciona una opción:", p["opciones"], key=f"resp_{i}", index=None)
 
+                # --- BOTONES DE NAVEGACIÓN ---
                 col1, col2, col3 = st.columns([1, 1, 1])
                 with col1:
                     if i > 0 and st.button("⬅️ Anterior"):
                         st.session_state.pregunta_actual -= 1
+                        st.experimental_rerun()
                 with col2:
                     st.empty()
                 with col3:
-                    if i < len(preguntas) - 1 and st.button("Siguiente ➡️"):
-                        if respuesta:
-                            st.session_state.respuestas[p["pregunta"]] = respuesta
-                            st.session_state.pregunta_actual += 1
-                    elif i == len(preguntas) - 1 and st.button("📤 Enviar"):
-                        st.session_state.respuestas[p["pregunta"]] = respuesta
-                        correctas = sum(
-                            1 for p in preguntas
-                            if st.session_state.respuestas.get(p["pregunta"]) == p["respuesta_correcta"]
-                        )
-                        puntaje = correctas
-                        tiempo_usado = f"{tiempo_transcurrido//60}:{tiempo_transcurrido%60:02d}"
-                        if puntaje >= 40:
-                            nivel = "🔥 Rendimiento Alto"
-                        elif puntaje >= 25:
-                            nivel = "⚖️ Rendimiento Medio"
-                        else:
-                            nivel = "🧩 Rendimiento Bajo"
-                        guardar_respuestas(usuario, st.session_state.respuestas, puntaje, tiempo_usado, nivel)
-                        st.success(f"✅ Test completado. Puntaje: {puntaje}/{len(preguntas)}")
-                        st.balloons()
-                        st.session_state.en_progreso = False
+                    if i < len(preguntas) - 1:
+                        if st.button("Siguiente ➡️"):
+                            if respuesta:
+                                st.session_state.respuestas[p["pregunta"]] = respuesta
+                                st.session_state.pregunta_actual += 1
+                                st.experimental_rerun()
+                            else:
+                                st.warning("⚠️ Selecciona una opción antes de continuar.")
+                    else:
+                        if st.button("📤 Enviar"):
+                            if respuesta:
+                                st.session_state.respuestas[p["pregunta"]] = respuesta
+                                correctas = sum(
+                                    1 for p in preguntas
+                                    if st.session_state.respuestas.get(p["pregunta"]) == p["respuesta_correcta"]
+                                )
+                                puntaje = correctas
+                                tiempo_usado = f"{tiempo_transcurrido//60}:{tiempo_transcurrido%60:02d}"
+                                if puntaje >= 40:
+                                    nivel = "🔥 Rendimiento Alto"
+                                elif puntaje >= 25:
+                                    nivel = "⚖️ Rendimiento Medio"
+                                else:
+                                    nivel = "🧩 Rendimiento Bajo"
+                                guardar_respuestas(usuario, st.session_state.respuestas, puntaje, tiempo_usado, nivel)
+                                st.success(f"✅ Test completado. Puntaje: {puntaje}/{len(preguntas)}")
+                                st.balloons()
+                                st.session_state.en_progreso = False
+                                st.experimental_rerun()
+                            else:
+                                st.warning("⚠️ Selecciona una opción antes de enviar.")
     else:
         st.warning("Por favor, ingrese su nombre de usuario para comenzar.")
 
@@ -152,6 +201,7 @@ with tab2:
                 st.download_button("⬇️ Descargar respuestas (CSV)", f, "respuestas.csv")
 
         if "puntaje" in df.columns:
+            st.write("### 📈 Distribución de puntajes")
             st.bar_chart(df["puntaje"])
     else:
         st.info("Aún no hay resultados registrados.")
