@@ -174,7 +174,7 @@
   },
   {
     "id": 16,
-    "pregunta": "¿Cuántas de las 5 cantidades abajo indicadas son idénticas una a la otra?",
+    "pregunta": "¿Cuántas de las 5 cantidades indicadas son idénticas una a la otra: 84721-84721, 9210651-9210561, 14201201-14210210, 96101101-96101161, 88884444-88884444?",
     "opciones": [
       "0",
       "1",
@@ -251,7 +251,7 @@
   },
   {
     "id": 23,
-    "pregunta": "Dos de los proverbios tienen igual significado. ¿Cuáles son?",
+    "pregunta": "Dos de los proverbios tienen igual significado: Cada oveja con su pareja, De tal palo, tal astilla, Cria cuervos y te sacarán los ojos, Dime con quien andas y te diré quien eres, Son semillas del mismo granero ¿Cuáles son?",
     "opciones": [
       "1 & 5",
       "2 & 4",
@@ -471,10 +471,10 @@
       "1-3",
       "2-4",
       "3-22",
-      "3.22",
+      "3-22",
       "3-8"
     ],
-    "respuesta_correcta": "3.22"
+    "respuesta_correcta": "3-22"
   },
   {
     "id": 43,
