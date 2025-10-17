@@ -157,7 +157,7 @@ with tab1:
                             if respuesta:
                                 st.session_state.respuestas[p["pregunta"]] = respuesta
                                 st.session_state.pregunta_actual += 1
-                                st.experimental_rerun()
+                                st.rerun()
                             else:
                                 st.warning("⚠️ Selecciona una opción antes de continuar.")
                     else:
@@ -180,7 +180,7 @@ with tab1:
                                 st.success(f"✅ Test completado. Puntaje: {puntaje}/{len(preguntas)}")
                                 st.balloons()
                                 st.session_state.en_progreso = False
-                                st.experimental_rerun()
+                                st.rerun()
                             else:
                                 st.warning("⚠️ Selecciona una opción antes de enviar.")
     else:
