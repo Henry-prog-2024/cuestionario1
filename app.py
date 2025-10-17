@@ -148,7 +148,7 @@ with tab1:
                 with col1:
                     if i > 0 and st.button("⬅️ Anterior"):
                         st.session_state.pregunta_actual -= 1
-                        st.experimental_rerun()
+                        st.rerun()
                 with col2:
                     st.empty()
                 with col3:
